@@ -9,7 +9,7 @@ use penrose::{
 use std::collections::HashMap;
 
 pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>> {
-    let raw_bindings = map! {
+    let mut raw_bindings = map! {
         map_keys: |k: &str| k.to_string();
 
         "M-j" => modify_with(|cs| cs.focus_down()),
@@ -17,7 +17,7 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
         "M-S-j" => modify_with(|cs| cs.swap_down()),
         "M-S-k" => modify_with(|cs| cs.swap_up()),
         "M-w" => modify_with(|cs| cs.kill_focused()),
-        "M-Tab" => modify_with(|cs| cs.toggle_tag()),
+        "M-Tab" => modify_with(|cs| cs.next_screen()),
         "M-S-Tab" => modify_with(|cs| cs.drag_workspace_forward()),
         "M-bracketright" => modify_with(|cs| cs.next_layout()),
         "M-bracketleft" => modify_with(|cs| cs.previous_layout()),
@@ -29,6 +29,15 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
         "M-Return" => spawn("alacritty"),
         "M-A-Escape" => power_menu(),
     };
+
+    for tag in &["1", "2"] {
+        raw_bindings.extend([
+            (
+                format!("M-{tag}"),
+                modify_with(move |client_set| client_set.move_focused_to_tag(tag)),
+            ),
+        ]);
+    }
 
     raw_bindings
 }
