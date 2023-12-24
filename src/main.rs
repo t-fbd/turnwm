@@ -7,7 +7,7 @@ use penrose::{
     Result,
 };
 use std::collections::HashMap;
-use tracing_subscriber::{self, prelude::*};
+// use tracing_subscriber::{self, prelude::*};
 
 use turnwm::{
     bindings::raw_key_bindings,
@@ -16,10 +16,10 @@ use turnwm::{
 
 fn main() -> Result<()> {
     // Set up logging to stdout
-    tracing_subscriber::fmt()
-        .with_env_filter("info")
-        .finish()
-        .init();
+    // tracing_subscriber::fmt()
+    //     .with_env_filter("info")
+    //     .finish()
+    //     .init();
 
     // Create a new connection to the X server
     let conn = RustConn::new()?;
