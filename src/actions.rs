@@ -4,8 +4,6 @@ use penrose::{
     extensions::util::dmenu::{DMenu, DMenuConfig, MenuMatch},
     util::spawn,
 };
-use std::process::exit;
-
 
 pub fn power_menu() -> KeyHandler {
     key_handler(|state, _| {
@@ -18,7 +16,6 @@ pub fn power_menu() -> KeyHandler {
                 "logout" => spawn("pkill -fi penrose"),
                 "shutdown" => spawn("sudo shutdown -h now"),
                 "reboot" => spawn("sudo reboot"),
-                "restart-wm" => exit(0), // Wrapper script then handles restarting us
                 _ => unimplemented!(),
             }
         } else {
