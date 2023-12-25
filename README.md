@@ -1,6 +1,6 @@
 # turnwm - my personal implementation of the [Penrose](https://github.com/sminez/penrose) library.
 
-Extremely minimal, dual-screen no workspaces. Intended for heavy use with tmux.
+Extremely minimal, dual-screen no workspaces. Intended for heavy use with tmux and my personal setup. This very well may not work the best or at all for you.
 
         "M-j"               Focus Down
         "M-k"               Focus Up
@@ -9,6 +9,7 @@ Extremely minimal, dual-screen no workspaces. Intended for heavy use with tmux.
         "M-w"               Kill Focused
         "M-Tab"             Switch Screen Focus
         "M-S-Tab"           Switch Master Screen
+        "M-grave"           Switch Focused Client to Other Screen
         "M-bracketright"    Next Layout
         "M-bracketleft"     Previous Layout 
         "M-u"               Inc Main +1
@@ -17,10 +18,7 @@ Extremely minimal, dual-screen no workspaces. Intended for heavy use with tmux.
         "M-h"               Shrink Main
         "M-r"               Rofi
         "M-Return"          Alacritty
-        "M-A-Escape"        power_menu function (modified version of same named function found [here](https://github.com/sminez/my-penrose-config/blob/develop/src/actions.rs))
-
-        "M-{1,2}"           Switch focused client to screen {1,2}
-
+        "M-A-Escape"        Power Menu (modified version of same named function found [here](https://github.com/sminez/my-penrose-config/blob/develop/src/actions.rs))
 
         Layouts:
             Gaps: 
