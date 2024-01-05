@@ -1,10 +1,10 @@
 use penrose::{
-    builtin::hooks::SpacingHook,
+    // builtin::hooks::SpacingHook,
     core::{
         bindings::parse_keybindings_with_xmodmap,
         Config, WindowManager,
     },
-    extensions::hooks::add_ewmh_hooks,
+    // extensions::hooks::add_ewmh_hooks,
     x11rb::RustConn,
 };
 use std::collections::HashMap;
@@ -14,8 +14,8 @@ use anyhow::Result;
 use turnwm::{
     bindings::raw_key_bindings,
     layouts::layouts,
-    bar::status_bar,
-    OUTER_PX, INNER_PX, BAR_HEIGHT_PX,
+    // bar::status_bar,
+    // OUTER_PX, INNER_PX, BAR_HEIGHT_PX,
 };
 
 fn main() -> Result<()> {
@@ -25,12 +25,14 @@ fn main() -> Result<()> {
         .finish()
         .init();
 
-    let layout_hook = SpacingHook {
-        inner_px: INNER_PX,
-        outer_px: OUTER_PX,
-        top_px: 0,
-        bottom_px: BAR_HEIGHT_PX,
-    };
+    // Set up the spacing hook to add gaps around windows when using a bar
+
+    // let layout_hook = SpacingHook {
+    //     inner_px: INNER_PX,
+    //     outer_px: OUTER_PX,
+    //     top_px: 0,
+    //     bottom_px: BAR_HEIGHT_PX,
+    // };
 
     // Create a new connection to the X server
     let conn = RustConn::new()?;
@@ -38,19 +40,25 @@ fn main() -> Result<()> {
     // Set up keybindings
     let key_bindings = parse_keybindings_with_xmodmap(raw_key_bindings())?;
 
-    // Set up the WindowManager config
-    let config = add_ewmh_hooks(Config {
+    // Set up config
+
+    // let config = add_ewmh_hooks(Config {
+    //     default_layouts: layouts(),
+    //     layout_hook: Some(Box::new(layout_hook)),
+    //     ..Default::default()
+    // });
+
+    let config = Config {
         default_layouts: layouts(),
-        layout_hook: Some(Box::new(layout_hook)),
         ..Default::default()
-    });
+    };
 
     // Initialise the WindowManager with our config and keybindings
     let wm = WindowManager::new(config, key_bindings, HashMap::new(), conn)?;
-    let bar = status_bar()?;
+    // let bar = status_bar()?;
 
-    let wm = bar.add_to(wm);
-
+    // let wm = bar.add_to(wm);
+    
     // Run the WindowManager main loop
     wm.run()?;
 

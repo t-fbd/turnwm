@@ -23,7 +23,7 @@ pub fn status_bar<X: XConn>() -> penrose_ui::Result<StatusBar<X>> {
     };
 
     let padded_style = TextStyle {
-        padding: (4, 2),
+        padding: (2, 2),
         ..style
     };
 
@@ -32,14 +32,14 @@ pub fn status_bar<X: XConn>() -> penrose_ui::Result<StatusBar<X>> {
         BAR_HEIGHT_PX,
         style.bg.unwrap_or_else(|| 0x000000.into()),
         FONT,
-        8,
+        10,
         vec![
             Box::new(CurrentLayout::new(style)),
             Box::new(ActiveWindowName::new(
                 MAX_ACTIVE_WINDOW_CHARS,
                 TextStyle {
                     bg: Some(highlight),
-                    padding: (6, 4),
+                    padding: (4, 4),
                     ..style
                 },
                 true,
