@@ -7,6 +7,14 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.79"
-penrose = "0.3.4"
-penrose_ui = "0.3.4"
-tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
+
+# crates.io penrose build
+# penrose = "0.3.4"
+# penrose_ui = "0.3.4"
+
+# local build of penrose
+penrose = { path = "/home/turn/localbuilds/penrose" }
+penrose_ui = { path = "/home/turn/localbuilds/penrose/crates/penrose_ui" }
+
+# logging
+# tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
