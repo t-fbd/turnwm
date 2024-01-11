@@ -22,6 +22,8 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
         "M-k" => modify_with(|cs| cs.focus_up()),
         "M-S-j" => modify_with(|cs| cs.swap_down()),
         "M-S-k" => modify_with(|cs| cs.swap_up()),
+        "M-space" => modify_with(|cs| cs.swap_focus_and_head()),
+        "M-S-space" => modify_with(|cs| cs.rotate_focus_to_head()), 
         "M-w" => modify_with(|cs| cs.kill_focused()),
 
         // workspace management

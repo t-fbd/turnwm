@@ -38,6 +38,7 @@ fn main() -> Result<()> {
     let config = add_ewmh_hooks(Config {
         default_layouts: layouts(),
         layout_hook: Some(Box::new(layout_hook)),
+        tags: vec![String::from("1"), String::from("2"), String::from("3")],
         ..Default::default()
     });
 
