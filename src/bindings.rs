@@ -1,4 +1,4 @@
-use crate::actions::power_menu;
+use crate::actions::{power_menu, bar_off, bar_on};
 use penrose::{
     builtin::actions::{
         modify_with, send_layout_message, spawn,
@@ -16,6 +16,10 @@ const DELTA: i32 = 10;
 pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>> {
     let mut raw_bindings = map! {
         map_keys: |k: &str| k.to_string();
+
+        // bar
+        "M-b" => bar_on(),
+        "M-S-b" => bar_off(),
 
         // client management
         "M-j" => modify_with(|cs| cs.focus_down()),
@@ -40,6 +44,8 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
         // launchers
         "M-r" => spawn("rofi -show drun"),
         "M-Return" => spawn("alacritty"),
+        "M-S-Return" => spawn("/home/turn/localbuilds/Vieb/dist/linux-unpacked/vieb"),
+        "M-S-e" => spawn("alacritty -e nvim"),
         "M-A-Escape" => power_menu(),
 
         // Floating management

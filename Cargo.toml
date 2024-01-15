@@ -17,4 +17,4 @@ penrose = { path = "/home/turn/localbuilds/penrose" }
 penrose_ui = { path = "/home/turn/localbuilds/penrose/crates/penrose_ui" }
 
 # logging
-# tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }

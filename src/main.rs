@@ -9,6 +9,7 @@ use penrose::{
 };
 use std::collections::HashMap;
 use anyhow::Result;
+use tracing_subscriber::{self, prelude::*};
 
 use turnwm::{
     bindings::raw_key_bindings,
@@ -18,8 +19,13 @@ use turnwm::{
 };
 
 fn main() -> Result<()> {
-    // Set up the spacing hook to add gaps around windows when using a bar
+    // Set up tracing
+    tracing_subscriber::fmt()
+        .with_env_filter("info")
+        .finish()
+        .init();    
 
+    // Set up the spacing hook to add gaps around windows when using a bar
     let layout_hook = SpacingHook {
         inner_px: INNER_PX,
         outer_px: OUTER_PX,
@@ -34,7 +40,6 @@ fn main() -> Result<()> {
     let key_bindings = parse_keybindings_with_xmodmap(raw_key_bindings())?;
 
     // Set up config
-
     let config = add_ewmh_hooks(Config {
         default_layouts: layouts(),
         layout_hook: Some(Box::new(layout_hook)),
@@ -42,6 +47,7 @@ fn main() -> Result<()> {
         ..Default::default()
     });
 
+    // config without ewmh hooks
     // let config = Config {
     //     default_layouts: layouts(),
     //     ..Default::default()

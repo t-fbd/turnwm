@@ -1,4 +1,4 @@
-use crate::{BAR_HEIGHT_PX, BLACK, BLUE, FONT, MAX_ACTIVE_WINDOW_CHARS, WHITE, GREY};
+use crate::{BAR_HEIGHT_PX, BLACK, FONT, MAX_ACTIVE_WINDOW_CHARS, WHITE, GREY, RED};
 use penrose::{x::XConn, Color};
 use penrose_ui::{
     bar::{
@@ -14,7 +14,8 @@ use penrose_ui::{
 // Mostly the example dwm bar from the main repo but recreated here so it's easier to tinker
 // with and add in debug widgets when needed.
 pub fn status_bar<X: XConn>() -> penrose_ui::Result<StatusBar<X>> {
-    let highlight: Color = BLUE.into();
+    let highlight: Color = RED.into();
+    let title_highlight: Color = BLACK.into();
     let empty_ws: Color = GREY.into();
 
     let style = TextStyle {
@@ -33,7 +34,7 @@ pub fn status_bar<X: XConn>() -> penrose_ui::Result<StatusBar<X>> {
         BAR_HEIGHT_PX,
         style.bg.unwrap_or_else(|| 0x000000.into()),
         FONT,
-        10,
+        8,
         vec![
             Box::new(Workspaces::new(
                 style,
@@ -44,7 +45,7 @@ pub fn status_bar<X: XConn>() -> penrose_ui::Result<StatusBar<X>> {
             Box::new(ActiveWindowName::new(
                 MAX_ACTIVE_WINDOW_CHARS,
                 TextStyle {
-                    bg: Some(highlight),
+                    bg: Some(title_highlight),
                     padding: (4, 4),
                     ..style
                 },
@@ -55,3 +56,4 @@ pub fn status_bar<X: XConn>() -> penrose_ui::Result<StatusBar<X>> {
         ],
     )
 }
+
