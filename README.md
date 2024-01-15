@@ -1,7 +1,5 @@
 # turnwm - my personal implementation of the [Penrose](https://github.com/sminez/penrose) library.
 
-Extremely minimal, dual-screen no workspaces. Intended for heavy use with tmux and my personal setup. This very well may not work the best or at all for you.
-
         M-b               Bar On
         M-C-b             Bar Off
         M-j               Focus Down
