@@ -1,11 +1,8 @@
-use crate::{BAR_HEIGHT_PX, BLACK, FONT, MAX_ACTIVE_WINDOW_CHARS, WHITE, GREY, RED};
+use crate::{BAR_HEIGHT_PX, BLACK, FONT, GREY, MAX_ACTIVE_WINDOW_CHARS, RED, WHITE};
 use penrose::{x::XConn, Color};
 use penrose_ui::{
     bar::{
-        widgets::{
-            current_date_and_time, ActiveWindowName,
-            CurrentLayout, Workspaces,
-        },
+        widgets::{current_date_and_time, ActiveWindowName, CurrentLayout, Workspaces},
         Position, StatusBar,
     },
     core::TextStyle,
@@ -36,11 +33,7 @@ pub fn status_bar<X: XConn>() -> penrose_ui::Result<StatusBar<X>> {
         FONT,
         8,
         vec![
-            Box::new(Workspaces::new(
-                style,
-                highlight,
-                empty_ws,
-            )),
+            Box::new(Workspaces::new(style, highlight, empty_ws)),
             Box::new(CurrentLayout::new(style)),
             Box::new(ActiveWindowName::new(
                 MAX_ACTIVE_WINDOW_CHARS,
@@ -56,4 +49,3 @@ pub fn status_bar<X: XConn>() -> penrose_ui::Result<StatusBar<X>> {
         ],
     )
 }
-

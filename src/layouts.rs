@@ -1,13 +1,16 @@
-use crate::{MAX_MAIN, RATIO, RATIO_STEP,
+use crate::{
+    MAX_MAIN,
+    RATIO,
+    RATIO_STEP,
     //OUTER_PX, INNER_PX
 };
 
 use penrose::{
-    stack,
     // add builtin::layout::Gaps for when no bar is used
-    builtin::layout::{MainAndStack, Monocle, CenteredMain},
-    core::layout::{LayoutStack, Layout},
+    builtin::layout::{CenteredMain, MainAndStack, Monocle},
+    core::layout::{Layout, LayoutStack},
     extensions::layout::Conditional,
+    stack,
 };
 
 pub fn layouts() -> LayoutStack {
@@ -16,11 +19,11 @@ pub fn layouts() -> LayoutStack {
         MainAndStack::side(MAX_MAIN, RATIO, RATIO_STEP),
         MainAndStack::bottom(MAX_MAIN, RATIO, RATIO_STEP),
         flex_tall(),
-        Monocle::boxed()
         // below for when no bar is used
         // Gaps::wrap(MainAndStack::side(MAX_MAIN, RATIO, RATIO_STEP), OUTER_PX, INNER_PX),
         // Gaps::wrap(MainAndStack::bottom(MAX_MAIN, RATIO, RATIO_STEP), OUTER_PX, INNER_PX),
         // Gaps::wrap(Monocle::boxed(), OUTER_PX, INNER_PX),
+        Monocle::boxed()
     )
 }
 

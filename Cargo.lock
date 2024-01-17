@@ -447,6 +447,7 @@ dependencies = [
  "anyhow",
  "penrose",
  "penrose_ui",
+ "tracing",
  "tracing-subscriber",
 ]
 

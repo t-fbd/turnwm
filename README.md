@@ -1,7 +1,8 @@
 # turnwm - my personal implementation of the [Penrose](https://github.com/sminez/penrose) library.
 
-        M-b               Bar On
-        M-C-b             Bar Off
+        M-b               Toggle Bar
+        M-a               Show Time/Date
+        M-z               Current Layout
         M-j               Focus Down
         M-k               Focus Up
         M-S-j             Swap Down
