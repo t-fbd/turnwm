@@ -109,20 +109,9 @@ pub fn dzen_clients() -> KeyHandler {
             }
 
             let lines = lines.to_string();
-            let mut new_text = String::new();
-            info!("text: {}", text);
-
-            for line in text.lines() {
-                if line.len() > 50 {
-                    let mut new_line = line[0..47].to_string();
-                    new_line.push_str("...");
-                    new_text.push_str(&new_line);
-                } else {
-                    new_text.push_str(line);
-                }
-            }
             
-            let text = "CLIENTS>>>\n".to_owned() + &new_text;
+            let text = "CLIENTS>>>\n".to_owned() + &text;
+            info!("text: {}", text);
 
             dzen_handler(
                 &text.as_str(), 

@@ -86,7 +86,7 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
         //time
         "M-a" => modify_with(|_|
             dzen_handler(
-                "$(date +'%a %d %b %H:%M')",
+                "echo $(date +'%a %d %b %H:%M')",
                 2,
                 DZEN_CENTER_X - 100,
                 0,
@@ -99,7 +99,7 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
         //ram
         "M-S-a" => modify_with(|_|
             dzen_handler(
-                "$(cat /proc/meminfo | head -4 | awk '{print $2}' | tr '\n' ' ' | awk '{print int(($1 - $3 - $4 - $5)/1024)}') MB",
+                "echo $(cat /proc/meminfo | head -4 | awk '{print $2}' | tr '\n' ' ' | awk '{print int(($1 - $3 - $4)/1024)}') MB",
                 2,
                 DZEN_CENTER_X - 50,
                 0,
