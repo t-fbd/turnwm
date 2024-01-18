@@ -1,5 +1,6 @@
-use crate::actions::{dzen_clients, dzen_handler, power_menu};
-use crate::{DELTA, DZEN_CENTER_X};
+use crate::actions::{dzen_clients, power_menu};
+use crate::dzen_wrapper::DzenBuilder;
+use crate::{DELTA, DZEN_CENTER_X, dzen_wrapper::Dzen};
 use penrose::{
     builtin::actions::{
         floating::{float_focused, reposition, resize, sink_all, sink_focused},
@@ -31,45 +32,30 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
         // workspace management
         "M-Tab" => modify_with(|cs| {
             cs.toggle_tag();
-            dzen_handler(
-                cs.current_tag(),
-                1,
-                0,
-                0, 
-                15, 
-                15, 
-                Some(&["-ta c"])
-            );
+            Dzen::new(0, 0, 15, 15).set_p(1).set_title_align('c').build().run(
+                format!("echo '{}'", cs.current_workspace().tag()).as_str(),
+                "zsh"
+            )
         }),
 
         // layouts
         "M-bracketright" => modify_with(|cs| {
             cs.next_layout();
-            dzen_handler(
-                cs.current_workspace()
+            Dzen::new(0, 0, 15, 60).set_p(1).set_title_align('c').build().run(
+                format!("echo '{}'", cs.current_workspace()
                     .layout_name()
-                    .as_str(), 
-                1, 
-                0, 
-                0, 
-                60, 
-                15, 
-                Some(&["-ta c"])
-            );
+                    .as_str()).as_str(),
+                "zsh"
+            )
         }),
         "M-bracketleft" => modify_with(|cs| {
             cs.previous_layout();
-            dzen_handler(
-                cs.current_workspace()
+            Dzen::new(0, 0, 15, 60).set_p(1).set_title_align('c').build().run(
+                format!("echo '{}'", cs.current_workspace()
                     .layout_name()
-                    .as_str(), 
-                1, 
-                0, 
-                0, 
-                60, 
-                15, 
-                Some(&["-ta c"])
-            );
+                    .as_str()).as_str(),
+                "zsh"
+            )
         }),
         "M-u" => send_layout_message(|| IncMain(1)),
         "M-d" => send_layout_message(|| IncMain(-1)),
@@ -85,66 +71,65 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
 
         //time
         "M-a" => modify_with(|_|
-            dzen_handler(
-                "echo $(date +'%a %d %b %H:%M')",
-                2,
+            Dzen::new(
                 DZEN_CENTER_X - 100,
                 0,
-                200,
                 15,
-                Some(&["-ta c"])
+                200
+            ).set_p(2).set_title_align('c').build().run(
+                "echo $(date +'%a %d %b %H:%M')",
+                "zsh"
             )
         ),
 
         //ram
         "M-S-a" => modify_with(|_|
-            dzen_handler(
-                "echo $(cat /proc/meminfo | head -4 | awk '{print $2}' | tr '\n' ' ' | awk '{print int(($1 - $3 - $4)/1024)}') MB",
-                2,
+            Dzen::new(
                 DZEN_CENTER_X - 50,
                 0,
-                100,
                 15,
-                Some(&["-ta c"])
+                100
+            ).set_p(2).set_title_align('c').build().run(
+                "echo $(cat /proc/meminfo | head -4 | awk '{print $2}' | tr '\n' ' ' | awk '{print int(($1 - $3 - $4)/1024)}') MB",
+                "zsh"
             )
         ),
 
 
         // current layout
         "M-z" => modify_with(|cs| 
-            dzen_handler(
-                cs.current_workspace()
+            Dzen::new(
+                DZEN_CENTER_X - 30,
+                0,
+                15,
+                60
+            ).set_p(1).set_title_align('c').build().run(
+                format!("echo '{}'", cs.current_workspace()
                     .layout_name()
-                    .as_str(), 
-                1, 
-                0, 
-                0, 
-                60, 
-                15, 
-                Some(&["-ta c"])
+                    .as_str()).as_str(),
+                "zsh"
             )
         ),
 
-        "M-S-z" => dzen_clients(),
+        "M-S-z" => {
+            dzen_clients()
+        },
         "M-C-z" => modify_with(|_| 
-            dzen_handler(
+            Dzen::new(
+                0,
+                0,
+                15,
+                300
+            ).set_p(0)
+            .set_title_align('c')
+            .set_slave_align('l')
+            .set_lines(10)
+            .add_menu()
+            .set_e("button1=togglecollapse;button2=exit;button3=exit;button4=scrollup:3;button5=scrolldown:3;entertitle=uncollapse;leaveslave=collapse")
+            .build()
+            .run(
                 "{echo Procs; ps -a; sleep 5}",
-                0, 
-                0, 
-                0, 
-                300, 
-                15, 
-                Some(
-                    &[
-                    "-l", 
-                    "10", 
-                    "-sa", 
-                    "l", 
-                    "-m",
-                    "-e", 
-                    "'button1=togglecollapse;button2=exit;button3=exit;button4=scrollup:3;button5=scrolldown:3;entertitle=uncollapse;leaveslave=collapse'"
-                    ]
-                )
+                "zsh"
             )
         ),
 
@@ -170,14 +155,14 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
             (
                 format!("M-{tag}"),
                 modify_with(move |client_set| {
-                    dzen_handler(
-                        tag, 
-                        1, 
-                        0, 
-                        0, 
-                        15, 
-                        15, 
-                        Some(&["-ta c"])
+                    Dzen::new(
+                        0,
+                        0,
+                        15,
+                        15
+                    ).set_p(1).set_title_align('c').build().run(
+                        format!("echo '{}'", tag).as_str(),
+                        "zsh"
                     );
                     client_set.pull_tag_to_screen(tag)
                 }),
@@ -185,14 +170,14 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
             (
                 format!("M-S-{tag}"),
                 modify_with(move |client_set| {
-                    dzen_handler(
-                        tag, 
-                        1, 
-                        0, 
-                        0, 
-                        15, 
-                        15, 
-                        Some(&["-ta c"])
+                    Dzen::new(
+                        0,
+                        0,
+                        15,
+                        15
+                    ).set_p(1).set_title_align('c').build().run(
+                        format!("echo '{}'", tag).as_str(),
+                        "zsh"
                     );
                     client_set.move_focused_to_tag(tag)
                 }),

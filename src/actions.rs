@@ -1,4 +1,3 @@
-use crate::KeyHandler;
 use penrose::{
     builtin::{actions::key_handler, hooks::SpacingHook},
     core::bindings::KeyEventHandler,
@@ -7,81 +6,24 @@ use penrose::{
     x11rb::RustConn,
 };
 
-use crate::{bar::status_bar, BAR_HEIGHT_PX, INNER_PX, OUTER_PX};
+use crate::{
+    KeyHandler,
+    bar::status_bar,
+    BAR_HEIGHT_PX, INNER_PX, OUTER_PX,
+    dzen_wrapper::{Dzen, DzenBuilder},
+};
 
 use penrose_ui::{bar::startup_hook, StatusBar};
 
 use std::process::exit;
-use std::process::Command;
 use tracing::info;
 
-pub fn dzen_handler(text: &str, p: u32, x: u32, y: u32, w: u32, h: u32, args: Option<&[&str]>) {
-    //kill any existing dzen2 processes
-    Command::new("pkill")
-        .arg("dzen2")
-        .spawn()
-        .expect("failed to execute process");
-
-    if text.contains("echo") && args.is_none() {
-        Command::new("zsh")
-            .arg("-c")
-            .arg(format!(
-                "{} | dzen2 -p {} -x {} -y {} -w {} -h {}",
-                text, p, x, y, w, h
-            ))
-            .spawn()
-            .expect("failed to execute process");
-        return;
-    } else if text.contains("echo") && args.is_some() {
-        Command::new("zsh")
-            .arg("-c")
-            .arg(format!(
-                "{} | dzen2 -p {} -x {} -y {} -w {} -h {} {}",
-                text,
-                p,
-                x,
-                y,
-                w,
-                h,
-                args.unwrap().join(" ")
-            ))
-            .spawn()
-            .expect("failed to execute process");
-        return;
-    }
-
-    if args.is_none() {
-        Command::new("zsh")
-            .arg("-c")
-            .arg(format!(
-                "echo '{}' | dzen2 -p {} -x {} -y {} -w {} -h {}",
-                text, p, x, y, w, h
-            ))
-            .spawn()
-            .expect("failed to execute process");
-        return;
-    } else {
-        Command::new("zsh")
-            .arg("-c")
-            .arg(format!(
-                "echo '{}' | dzen2 -p {} -x {} -y {} -w {} -h {} {}",
-                text,
-                p,
-                x,
-                y,
-                w,
-                h,
-                args.unwrap().join(" ")
-            ))
-            .spawn()
-            .expect("failed to execute process");
-    }
-}
 
 // dzen call to display all currently running clients and their tags
 pub fn dzen_clients() -> KeyHandler {
-    key_handler(|state, x: &RustConn| {
+    key_handler(move |state, x: &RustConn| {
         let mut text = String::new();
+
         for w in state.client_set.workspaces() {
             let tag = w.tag();
             let clients: Vec<_> = w.clients().collect::<Vec<_>>();
@@ -91,16 +33,15 @@ pub fn dzen_clients() -> KeyHandler {
             }
         }
         if text.is_empty() {
-            text.push_str("No clients running");
-            dzen_handler(
-                &text, 
-                1, 
-                0, 
-                0, 
-                200, 
-                15, 
-                None
-            );
+            let dzen = Dzen::new(
+                0,
+                0,
+                15,
+                300
+            ).set_p(1).set_title_align('c');
+            text.push_str("echo 'No clients running'");
+            dzen.build().run(&text, "zsh");
+            Ok(())
         } else {
             let mut lines = text.lines().count();
 
@@ -108,21 +49,26 @@ pub fn dzen_clients() -> KeyHandler {
                 lines = 10;
             }
 
-            let lines = lines.to_string();
+            let dzen = Dzen::new(
+                0,
+                0,
+                15,
+                300
+            ).set_p(0)
+                .set_title_align('c')
+                .set_slave_align('l')
+                .set_lines(lines as u32)
+                .add_menu()
+                .set_e("button1=togglecollapse;button2=exit;button3=exit;button4=scrollup:3;button5=scrolldown:3;entertitle=uncollapse;leaveslave=collapse");
+
             
             let text = "CLIENTS>>>\n".to_owned() + &text;
             info!("text: {}", text);
 
-            dzen_handler(
-                &text.as_str(), 
-                0, 
-                0, 
-                0, 
-                200, 
-                15, 
-                Some(&["-l", &lines, "-sa", "l", "-m", "-e", "'button1=togglecollapse;button2=exit;button3=exit;button4=scrollup:3;button5=scrolldown:3;entertitle=uncollapse;leaveslave=collapse'"]));
+            dzen.build().run(format!("echo '{}'", text).as_str(), "zsh");
+            Ok(())
+
         }
-        Ok(())
     })
 }
 

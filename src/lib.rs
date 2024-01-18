@@ -4,6 +4,7 @@ pub mod actions;
 pub mod bar;
 pub mod bindings;
 pub mod layouts;
+pub mod dzen_wrapper;
 
 pub type KeyHandler = Box<dyn KeyEventHandler<RustConn>>;
 
