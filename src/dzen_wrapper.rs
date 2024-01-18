@@ -300,7 +300,7 @@ impl DzenBuilder for Dzen {
 
     // event and action easy defaults
     fn set_e_easy(mut self) -> Self {
-        self.e = Some("button1=togglecollapse;button2=exit;button3=exit;button4=scrollup:3;button5=scrolldown:3;entertitle=uncollapse;leaveslave=collapse".to_string());
+        self.e = Some("button1=exit;button2=exit;button3=exit;button4=scrollup:3;button5=scrolldown:3;entertitle=uncollapse;leaveslave=collapse".to_string());
         self
     }
 
@@ -404,7 +404,7 @@ pub fn dzen_clients() -> KeyHandler {
                 .set_slave_align('l')
                 .set_lines(lines as u32)
                 .add_menu()
-                .set_e("button1=togglecollapse;button2=exit;button3=exit;button4=scrollup:3;button5=scrolldown:3;entertitle=uncollapse;leaveslave=collapse");
+                .set_e_easy();
 
             
             let text = "CLIENTS>>>\n".to_owned() + &text;

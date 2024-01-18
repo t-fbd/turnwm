@@ -124,7 +124,7 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
             .set_slave_align('l')
             .set_lines(10)
             .add_menu()
-            .set_e("button1=togglecollapse;button2=exit;button3=exit;button4=scrollup:3;button5=scrolldown:3;entertitle=uncollapse;leaveslave=collapse")
+            .set_e_easy()
             .build()
             .run(
                 "{echo Procs; ps -a; sleep 5}",
