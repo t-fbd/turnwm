@@ -1,4 +1,7 @@
+use penrose::{x11rb::RustConn, builtin::actions::key_handler, x::XConnExt};
 use tracing::{info, warn};
+
+use crate::KeyHandler;
 
 // returned from the build() function in Dzen
 pub struct DzenRunner {
@@ -28,6 +31,7 @@ impl DzenRunner {
             .spawn()
             .expect("failed to execute process");
     }
+
 }
 
 // dzen2 builder trait
@@ -52,7 +56,7 @@ pub trait DzenBuilder {
 
 // dzen2 shitty temp wrapper
 // go to https://github.com/robm/dzen for more info on dzen2 functionality
-#[derive(Default, Clone, Debug, PartialEq, Eq, Hash)]
+#[derive(Default, Clone, Debug)]
 pub struct Dzen {
     // foreground color
     pub fg: Option<String>,
@@ -141,7 +145,12 @@ impl Dzen {
         }
 
         if self.t_align.is_some() {
-            dzen.push(format!("-ta '{}'", self.t_align.as_ref().unwrap()));
+            if self.t_align.as_ref().unwrap() == &'l' || self.t_align.as_ref().unwrap() == &'c' || self.t_align.as_ref().unwrap() == &'r' {
+                dzen.push(format!("-ta '{}'", self.t_align.as_ref().unwrap()));
+            } else {
+                warn!("invalid t_align value, defaulting to left");
+                dzen.push(String::from("-ta 'l'"));
+            }
         }
 
         if self.t_width.is_some() {
@@ -149,7 +158,12 @@ impl Dzen {
         }
 
         if self.s_align.is_some() {
-            dzen.push(format!("-sa '{}'", self.s_align.as_ref().unwrap()));
+            if self.s_align.as_ref().unwrap() == &'l' || self.s_align.as_ref().unwrap() == &'c' || self.s_align.as_ref().unwrap() == &'r' {
+                dzen.push(format!("-sa '{}'", self.s_align.as_ref().unwrap()));
+            } else {
+                warn!("invalid s_align value, defaulting to left");
+                dzen.push(String::from("-sa 'l'"));
+            }
         }
 
         if self.l.is_some() {
@@ -350,3 +364,55 @@ impl DzenBuilder for Dzen {
 }
 
 
+// dzen call to display all currently running clients and their tags
+pub fn dzen_clients() -> KeyHandler {
+    key_handler(move |state, x: &RustConn| {
+        let mut text = String::new();
+
+        for w in state.client_set.workspaces() {
+            let tag = w.tag();
+            let clients: Vec<_> = w.clients().collect::<Vec<_>>();
+            for xid in clients {
+                let name = x.window_title(*xid).unwrap();
+                text.push_str(&format!("{}: {} [{}]\n", tag, name, xid));
+            }
+        }
+        if text.is_empty() {
+            let dzen = Dzen::new(
+                0,
+                0,
+                15,
+                300
+            ).set_p(1).set_title_align('c');
+            text.push_str("echo 'No clients running'");
+            dzen.build().run(&text, "zsh");
+            Ok(())
+        } else {
+            let mut lines = text.lines().count();
+
+            if lines > 10 {
+                lines = 10;
+            }
+
+            let dzen = Dzen::new(
+                0,
+                0,
+                15,
+                300
+            ).set_p(0)
+                .set_title_align('c')
+                .set_slave_align('l')
+                .set_lines(lines as u32)
+                .add_menu()
+                .set_e("button1=togglecollapse;button2=exit;button3=exit;button4=scrollup:3;button5=scrolldown:3;entertitle=uncollapse;leaveslave=collapse");
+
+            
+            let text = "CLIENTS>>>\n".to_owned() + &text;
+            info!("text: {}", text);
+
+            dzen.build().run(format!("echo '{}'", text).as_str(), "zsh");
+            Ok(())
+
+        }
+    })
+}

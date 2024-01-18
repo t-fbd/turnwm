@@ -1,8 +1,10 @@
 # turnwm - my personal implementation of the [Penrose](https://github.com/sminez/penrose) library.
 
-        M-b               Toggle Bar
         M-a               Show Time/Date
-        M-z               Current Layout
+        M-S-a             Display RAM Usage in MB (iffy accuracy tbh, but fairly close afaik)
+        M-z               Display Current Layout
+        M-S-z             Active Worspace/Client Menu
+        M-C-z             Running Procs Menu
         M-j               Focus Down
         M-k               Focus Up
         M-S-j             Swap Down
@@ -38,16 +40,6 @@
         M-S-2             Move Focused to Tag 2
         M-S-3             Move Focused to Tag 3
 
-        Layouts:
-            Gaps: 
-                Outer gap = 10
-                Inner gap = 5
-
-            - Main And Stack (side)
-            - Main And Stack (bottom)
-            - FlexTall
-            - Monocle
-                
 
 See below for more on penrose:
 - https://github.com/sminez/Penrose

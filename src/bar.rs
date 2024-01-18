@@ -1,12 +1,13 @@
-use crate::{BAR_HEIGHT_PX, BLACK, FONT, GREY, MAX_ACTIVE_WINDOW_CHARS, RED, WHITE};
-use penrose::{x::XConn, Color};
+use crate::{BAR_HEIGHT_PX, BLACK, FONT, GREY, MAX_ACTIVE_WINDOW_CHARS, RED, WHITE, INNER_PX, OUTER_PX};
+use penrose::{x::{XConn, XConnExt}, Color, core::bindings::KeyEventHandler, x11rb::RustConn, builtin::{hooks::SpacingHook, actions::key_handler}};
 use penrose_ui::{
     bar::{
         widgets::{current_date_and_time, ActiveWindowName, CurrentLayout, Workspaces},
-        Position, StatusBar,
+        Position, StatusBar, startup_hook,
     },
     core::TextStyle,
 };
+use tracing::info;
 
 // Mostly the example dwm bar from the main repo but recreated here so it's easier to tinker
 // with and add in debug widgets when needed.
@@ -48,4 +49,36 @@ pub fn status_bar<X: XConn>() -> penrose_ui::Result<StatusBar<X>> {
             Box::new(current_date_and_time(padded_style)),
         ],
     )
+}
+
+pub fn toggle_bar() -> Box<dyn KeyEventHandler<RustConn>> {
+    key_handler(|state, x: &RustConn| -> Result<(), penrose::Error> {
+        if state.extension::<StatusBar<RustConn>>().is_ok() {
+            info!("Hiding status bar");
+            let layout_hook = SpacingHook {
+                inner_px: INNER_PX,
+                outer_px: OUTER_PX,
+                top_px: 0,
+                bottom_px: 0,
+            };
+
+            state.remove_extension::<StatusBar<RustConn>>();
+            state.config.layout_hook = Some(Box::new(layout_hook));
+        } else {
+            info!("Showing status bar");
+            let layout_hook = SpacingHook {
+                inner_px: INNER_PX,
+                outer_px: OUTER_PX,
+                top_px: 0,
+                bottom_px: BAR_HEIGHT_PX,
+            };
+
+            state.add_extension::<StatusBar<RustConn>>(status_bar().unwrap());
+            state.config.layout_hook = Some(Box::new(layout_hook));
+            // You need this to init the status bar window and state
+            startup_hook(state, x)?;
+        }
+
+        x.refresh(state)
+    })
 }

@@ -1,6 +1,5 @@
-use crate::actions::{dzen_clients, power_menu};
-use crate::dzen_wrapper::DzenBuilder;
-use crate::{DELTA, DZEN_CENTER_X, dzen_wrapper::Dzen};
+use crate::dzen_wrapper::{Dzen, dzen_clients, DzenBuilder};
+use crate::{DELTA, DZEN_CENTER_X};
 use penrose::{
     builtin::actions::{
         floating::{float_focused, reposition, resize, sink_all, sink_focused},
@@ -67,7 +66,7 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
         "M-Return" => spawn("alacritty"),
         "M-S-Return" => spawn("/home/turn/localbuilds/Vieb/dist/linux-unpacked/vieb"),
         "M-S-e" => spawn("alacritty -e nvim"),
-        "M-Escape" => power_menu(),
+        "M-Escape" => penrose::builtin::actions::exit(),
 
         //time
         "M-a" => modify_with(|_|

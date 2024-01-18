@@ -1,6 +1,5 @@
 use penrose::{core::bindings::KeyEventHandler, x11rb::RustConn};
 
-pub mod actions;
 pub mod bar;
 pub mod bindings;
 pub mod layouts;
