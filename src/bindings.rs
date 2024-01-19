@@ -65,8 +65,26 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
         "M-r" => spawn("rofi -show drun"),
         "M-Return" => spawn("alacritty"),
         "M-p" => spawn("/home/turn/localbuilds/Vieb/dist/linux-unpacked/vieb"),
-        "M-S-Return" => spawn("tmux new-session -A -s master -n main"),
+        "M-S-Return" => spawn("alacritty -e tmux new-session -A -s master -n main"),
         "M-S-e" => spawn("alacritty -e nvim"),
+        "M-S-question" => modify_with(|_| 
+            Dzen::new(
+                480,
+                0,
+                15,
+                960
+            ).set_p(0)
+            .set_title_align('c')
+            .set_slave_align('l')
+            .set_lines(10)
+            .add_menu()
+            .set_e_easy()
+            .build()
+            .run(
+                "(echo 'WM Log'; tail -f /home/turn/localbuilds/logs/turnwm.log)",
+                "zsh"
+            )
+        ),
         "M-Escape" => penrose::builtin::actions::exit(),
 
         //time
