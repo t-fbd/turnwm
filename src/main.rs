@@ -20,7 +20,7 @@ use turnwm::{
 fn main() -> Result<()> {
     // Set up tracing
     tracing_subscriber::fmt()
-        .with_env_filter("trace")
+        .with_env_filter("info")
         .finish()
         .init();
 

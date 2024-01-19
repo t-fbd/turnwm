@@ -1,5 +1,5 @@
 use crate::dzen_wrapper::{Dzen, dzen_clients, DzenBuilder};
-use crate::{DELTA, DZEN_CENTER_X};
+use crate::{DELTA, DZEN_CENTER_X, SCREEN_WIDTH};
 use penrose::{
     builtin::actions::{
         floating::{float_focused, reposition, resize, sink_all, sink_focused},
@@ -69,10 +69,10 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
         "M-S-e" => spawn("alacritty -e nvim"),
         "M-S-question" => modify_with(|_| 
             Dzen::new(
-                480,
+                0,
                 0,
                 15,
-                960
+                SCREEN_WIDTH
             ).set_p(0)
             .set_title_align('c')
             .set_slave_align('l')
@@ -82,7 +82,7 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
             .build()
             .run(
                 // remove terminal escape sequences
-                r"(echo 'WM Log'; cat /home/turn/localbuilds/logs/turnwm.log | sed -u 's/\x1b\[[0-9;]*m//g'; sleep 5; done)",
+                r"(while true; do echo 'WM Log'; tail -f /home/turn/localbuilds/logs/turnwm.log | sed -u 's/\x1b\[[0-9;]*m//g'; done)",
                 "zsh"
             )
         ),
