@@ -1,7 +1,11 @@
 # turnwm - my personal implementation of the [Penrose](https://github.com/sminez/penrose) library.
 
         M-a               Show Time/Date
+                           (persists until clicked with right or left click, or until a new
+                           dzen instance is created; this includes switching workspaces in 
+                           this build, this can be changed if ou want)                      
         M-S-a             Display RAM Usage in MB (iffy accuracy tbh, but fairly close afaik)
+                            (persists in the same way as Time/Date binding)
         M-z               Display Current Layout
         M-S-z             Active Worspace/Client Menu
         M-C-z             Running Procs Menu
@@ -21,7 +25,10 @@
         M-h               Shrink Main
         M-r               Rofi Launcher
         M-Return          Alacritty Terminal
-        M-A-Escape        Power Menu
+        M-S-Return        Launch Alacitty in Tmux
+                                (attach or create new 'MAIN' session)
+        M-p               Launch Vieb
+        M-A-Escape        Exit Penrose
         M-C-f             Float Focused
         M-C-s             Sink Focused Floating
         M-C-S-s           Sink All Floating

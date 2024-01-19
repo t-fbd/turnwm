@@ -64,7 +64,8 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
         // launchers
         "M-r" => spawn("rofi -show drun"),
         "M-Return" => spawn("alacritty"),
-        "M-S-Return" => spawn("/home/turn/localbuilds/Vieb/dist/linux-unpacked/vieb"),
+        "M-p" => spawn("/home/turn/localbuilds/Vieb/dist/linux-unpacked/vieb"),
+        "M-S-Return" => spawn("tmux new-session -A -s master -n main"),
         "M-S-e" => spawn("alacritty -e nvim"),
         "M-Escape" => penrose::builtin::actions::exit(),
 
@@ -75,8 +76,11 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
                 0,
                 15,
                 200
-            ).set_p(2).set_title_align('c').build().run(
-                "echo $(date +'%a %d %b %H:%M')",
+            ).set_p(0)
+            .set_title_align('c')
+            .set_e("button1=exit;button3=exit")
+            .build().run(
+                "(while true; do echo $(date +'%a %d %b %H:%M'); sleep 60; done)",
                 "zsh"
             )
         ),
@@ -88,8 +92,11 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
                 0,
                 15,
                 100
-            ).set_p(2).set_title_align('c').build().run(
-                "echo $(cat /proc/meminfo | head -4 | awk '{print $2}' | tr '\n' ' ' | awk '{print int(($1 - $3 - $4)/1024)}') MB",
+            ).set_p(0)
+            .set_title_align('c')
+            .set_e("button1=exit;button3=exit")
+            .build().run(
+                "(while true; do echo $(cat /proc/meminfo | head -4 | awk '{print $2}' | tr '\n' ' ' | awk '{print int(($1 - $3 - $4)/1024)}') MB; sleep 10; done)",
                 "zsh"
             )
         ),

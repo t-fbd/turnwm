@@ -59,35 +59,35 @@ pub trait DzenBuilder {
 #[derive(Default, Clone, Debug)]
 pub struct Dzen {
     // foreground color
-    pub fg: Option<String>,
+    fg: Option<String>,
     // background color
-    pub bg: Option<String>,
+    bg: Option<String>,
     // font
-    pub font: Option<String>,
+    font: Option<String>,
     // alignement of title window content
     // l = left, c = center, r = right
-    pub t_align: Option<char>,
+    t_align: Option<char>,
     // title window width
-    pub t_width: Option<i32>,
+    t_width: Option<i32>,
     // alignment of slave window
     // see t_align for possible values
-    pub s_align: Option<char>,
+    s_align: Option<char>,
     // visible lines
-    pub l: Option<u32>,
+    l: Option<u32>,
     // events and actions
-    pub e: Option<String>,
+    e: Option<String>,
     // menu mode
-    pub m: Option<bool>,
+    m: Option<bool>,
     // persist EOF (optional timeout in seconds), 0 for no timeout
-    pub p: Option<u32>,
+    p: Option<u32>,
     // window x position
-    pub x: Option<u32>,
+    x: Option<u32>,
     // window y position
-    pub y: Option<u32>,
+    y: Option<u32>,
     // window height
-    pub h: Option<u32>,
+    h: Option<u32>,
     // window width
-    pub w: Option<u32>,
+    w: Option<u32>,
 }
 
 impl Dzen {
