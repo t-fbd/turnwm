@@ -81,7 +81,8 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
             .set_e_easy()
             .build()
             .run(
-                "(echo 'WM Log'; tail -f /home/turn/localbuilds/logs/turnwm.log)",
+                // remove terminal escape sequences
+                r"(echo 'WM Log'; tail -f /home/turn/localbuilds/logs/turnwm.log | sed -u 's/\x1b\[[0-9;]*m//g')",
                 "zsh"
             )
         ),

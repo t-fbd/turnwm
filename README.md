@@ -6,6 +6,8 @@
                            this build, this can be changed if ou want)                      
         M-S-a             Display RAM Usage in MB (iffy accuracy tbh, but fairly close afaik)
                             (persists in the same way as Time/Date binding)
+        M-?               Display Log File contents
+                            (persists in the same way as Time/Date binding)
         M-z               Display Current Layout
         M-S-z             Active Worspace/Client Menu
         M-C-z             Running Procs Menu
