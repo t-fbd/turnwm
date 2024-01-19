@@ -10,7 +10,6 @@ pub struct DzenRunner {
 
 impl DzenRunner {
     pub fn kill() {
-        info!("killing dzen2");
         std::process::Command::new("pkill")
             .arg("dzen2")
             .spawn()
@@ -22,9 +21,7 @@ impl DzenRunner {
         // running at the same time. I prefer to have them killed so I don't have to worry about if they're
         // persistent or not
         Self::kill();
-        info!("running dzen2");
         let command = format!("{} | {}", text, self.options);
-        info!("dzen2 command: {}", command);
         std::process::Command::new(shell)
             .arg("-c")
             .arg(command)
@@ -148,7 +145,7 @@ impl Dzen {
             if self.t_align.as_ref().unwrap() == &'l' || self.t_align.as_ref().unwrap() == &'c' || self.t_align.as_ref().unwrap() == &'r' {
                 dzen.push(format!("-ta '{}'", self.t_align.as_ref().unwrap()));
             } else {
-                warn!("invalid t_align value, defaulting to left");
+                info!("invalid t_align value, defaulting to left");
                 dzen.push(String::from("-ta 'l'"));
             }
         }
@@ -161,7 +158,7 @@ impl Dzen {
             if self.s_align.as_ref().unwrap() == &'l' || self.s_align.as_ref().unwrap() == &'c' || self.s_align.as_ref().unwrap() == &'r' {
                 dzen.push(format!("-sa '{}'", self.s_align.as_ref().unwrap()));
             } else {
-                warn!("invalid s_align value, defaulting to left");
+                info!("invalid s_align value, defaulting to left");
                 dzen.push(String::from("-sa 'l'"));
             }
         }
