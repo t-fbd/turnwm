@@ -4,6 +4,7 @@ pub mod bar;
 pub mod bindings;
 pub mod layouts;
 pub mod dzen_wrapper;
+pub mod rofi_wrapper;
 
 pub type KeyHandler = Box<dyn KeyEventHandler<RustConn>>;
 
@@ -32,5 +33,10 @@ pub const BAR_HEIGHT_PX: u32 = 14;
 pub const MAX_MAIN: u32 = 1;
 pub const RATIO: f32 = 0.5;
 pub const RATIO_STEP: f32 = 0.05;
-pub const OUTER_PX: u32 = 10;
+pub const OUTER_PX: u32 = 5;
 pub const INNER_PX: u32 = 5;
+
+pub static TERM: &str = "st";
+pub static LAUNCHER: &str = "rofi -show drun";
+pub static EDITOR: &str = "st -e nvim";
+pub static BROWSER: &str = "Vieb";

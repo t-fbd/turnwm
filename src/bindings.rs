@@ -1,11 +1,24 @@
-use crate::dzen_wrapper::{Dzen, dzen_clients, DzenBuilder};
-use crate::{DELTA, DZEN_CENTER_X, SCREEN_WIDTH};
+use crate::{
+    dzen_wrapper::{
+        Dzen,
+        dzen_clients, 
+        DzenBuilder
+    },
+    DELTA, DZEN_CENTER_X, SCREEN_WIDTH, TERM, LAUNCHER, EDITOR, BROWSER,
+    // rofi_wrapper::rofi_clients,
+    // simpletext::{self, SimpleText, SimpleTextOption, SimpleTextBuilder},
+};
 use penrose::{
     builtin::actions::{
         floating::{float_focused, reposition, resize, sink_all, sink_focused},
         modify_with, send_layout_message, spawn,
     },
-    builtin::layout::messages::{ExpandMain, IncMain, ShrinkMain},
+    builtin::{
+        layout::messages::{
+            ExpandMain, IncMain, ShrinkMain
+        }, 
+        // actions::key_handler
+    },
     core::bindings::KeyEventHandler,
     map,
     x11rb::RustConn,
@@ -62,11 +75,11 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
         "M-h" => send_layout_message(|| ShrinkMain),
 
         // launchers
-        "M-r" => spawn("rofi -show drun"),
-        "M-Return" => spawn("alacritty"),
-        "M-p" => spawn("/home/turn/localbuilds/Vieb/dist/linux-unpacked/vieb"),
-        "M-S-Return" => spawn("alacritty -e tmux new-session -A -s master -n main"),
-        "M-S-e" => spawn("alacritty -e nvim"),
+        "M-r" => spawn(LAUNCHER),
+        "M-Return" => spawn(TERM),
+        "M-p" => spawn(BROWSER),
+        "M-S-Return" => spawn("st -e tmux new-session -A -s master -n main"),
+        "M-S-e" => spawn(EDITOR),
         "M-S-question" => modify_with(|_| 
             Dzen::new(
                 0,
@@ -82,11 +95,17 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
             .build()
             .run(
                 // remove terminal escape sequences
-                r"(while true; do echo 'WM Log'; tail -f /home/turn/localbuilds/logs/turnwm.log | sed -u 's/\x1b\[[0-9;]*m//g'; done)",
+                r"(while true; do echo 'WM Log'; tail -f /home/turn/.local/builds/logs/turnwm.log | sed -u 's/\x1b\[[0-9;]*m//g'; done)",
                 "zsh"
             )
         ),
         "M-Escape" => penrose::builtin::actions::exit(),
+        // "M-S-Escape" => key_handler(|_, _| {
+        //     let mut t = SimpleText::new();
+        //     t.set_option(SimpleTextOption::Content("turnwm"))
+        //         .set_option(SimpleTextOption::Persist(10));
+        //     simpletext::draw(t)
+        // }),
 
         //time
         "M-a" => modify_with(|_|
@@ -138,6 +157,7 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
 
         "M-S-z" => {
             dzen_clients()
+            // rofi_clients()
         },
         "M-C-z" => modify_with(|_| 
             Dzen::new(
@@ -175,7 +195,7 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
     };
 
     // more workspace management
-    for tag in &["1", "2", "3"] {
+    for tag in &["1", "2"] {
         raw_bindings.extend([
             (
                 format!("M-{tag}"),
@@ -194,17 +214,17 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
             ),
             (
                 format!("M-S-{tag}"),
-                modify_with(move |client_set| {
+                modify_with(move |cs| {
                     Dzen::new(
-                        0,
+                        DZEN_CENTER_X - 100,
                         0,
                         15,
-                        15
+                        240
                     ).set_p(1).set_title_align('c').build().run(
-                        format!("echo '{}'", tag).as_str(),
+                        format!("echo 'Client Moved: {} ==> {}'", cs.current_workspace().tag(), tag).as_str(),
                         "zsh"
                     );
-                    client_set.move_focused_to_tag(tag)
+                    cs.move_focused_to_tag(tag)
                 }),
             ),
         ]);

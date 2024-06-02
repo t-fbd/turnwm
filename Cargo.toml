@@ -6,12 +6,12 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.79"
-
-# local build of penrose
-penrose = { path = "/home/turn/localbuilds/penrose" }
-penrose_ui = { path = "/home/turn/localbuilds/penrose/crates/penrose_ui" }
-
 # logging
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 tracing = "0.1.40"
+
+#penrose net-build
+penrose = "0.3.4"
+penrose_ui = "0.3.4"
+rofi = "0.4.0"
+

@@ -1,7 +1,7 @@
 use penrose::{x11rb::RustConn, builtin::actions::key_handler, x::XConnExt};
 use tracing::{info, warn};
 
-use crate::KeyHandler;
+use crate::{KeyHandler, DZEN_CENTER_X};
 
 // returned from the build() function in Dzen
 pub struct DzenRunner {
@@ -376,7 +376,7 @@ pub fn dzen_clients() -> KeyHandler {
         }
         if text.is_empty() {
             let dzen = Dzen::new(
-                0,
+                DZEN_CENTER_X - 150,
                 0,
                 15,
                 300
@@ -392,7 +392,7 @@ pub fn dzen_clients() -> KeyHandler {
             }
 
             let dzen = Dzen::new(
-                0,
+                DZEN_CENTER_X - 150,
                 0,
                 15,
                 300
@@ -404,7 +404,7 @@ pub fn dzen_clients() -> KeyHandler {
                 .set_e_easy();
 
             
-            let text = "CLIENTS>>>\n".to_owned() + &text;
+            let text = "CLIENTS >>>\n".to_owned() + &text.trim();
             info!("text: {}", text);
 
             dzen.build().run(format!("echo '{}'", text).as_str(), "zsh");
