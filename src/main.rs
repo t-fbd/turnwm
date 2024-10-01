@@ -6,11 +6,10 @@ use penrose::{
     x11rb::RustConn,
 };
 
-use std::collections::HashMap;
 use tracing_subscriber::prelude::*;
 
 use turnwm::{
-    bindings::raw_key_bindings,
+    bindings::{raw_key_bindings, mouse_bindings},
     layouts::layouts,
     BLACK, GREY
     // bar::status_bar,
@@ -42,11 +41,11 @@ fn main() -> penrose::Result<()> {
         // layout_hook: Some(Box::new(layout_hook)),
         normal_border: BLACK.into(),
         focused_border: GREY.into(),
-        tags: vec![String::from("1"), String::from("2")],
+        tags: vec![String::from("1"), String::from("2"), String::from("3")],
         ..Default::default()
     };
 
-    let wm = WindowManager::new(config, key_bindings, HashMap::new(), conn)?;
+    let wm = WindowManager::new(config, key_bindings, mouse_bindings(), conn)?;
 
     wm.run()?;
 

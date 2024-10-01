@@ -1,25 +1,18 @@
 use crate::{
     dzen_wrapper::{
-        Dzen,
-        dzen_clients, 
-        DzenBuilder
-    },
-    DELTA, DZEN_CENTER_X, SCREEN_WIDTH, TERM, LAUNCHER, EDITOR, BROWSER,
+        dzen_clients, Dzen, DzenBuilder
+    }, BROWSER, DELTA, DZEN_CENTER_X, EDITOR, LAUNCHER, SCREEN_WIDTH, TERM
     // rofi_wrapper::rofi_clients,
     // simpletext::{self, SimpleText, SimpleTextOption, SimpleTextBuilder},
 };
 use penrose::{
-    builtin::actions::{
-        floating::{float_focused, reposition, resize, sink_all, sink_focused},
+    builtin::{actions::{
+        floating::{float_focused, reposition, resize, sink_all, sink_focused, MouseDragHandler, MouseResizeHandler},
         modify_with, send_layout_message, spawn,
-    },
-    builtin::{
-        layout::messages::{
+    }, layout::messages::{
             ExpandMain, IncMain, ShrinkMain
-        }, 
-        // actions::key_handler
-    },
-    core::bindings::KeyEventHandler,
+        }},
+    core::bindings::{KeyEventHandler, MouseEventHandler, MouseState, click_handler},
     map,
     x11rb::RustConn,
 };
@@ -80,7 +73,7 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
         "M-p" => spawn(BROWSER),
         "M-S-Return" => spawn("st -e tmux new-session -A -s master -n main"),
         "M-S-e" => spawn(EDITOR),
-        "M-S-question" => modify_with(|_| 
+        "M-S-l" => modify_with(|_| 
             Dzen::new(
                 0,
                 0,
@@ -106,6 +99,54 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
         //         .set_option(SimpleTextOption::Persist(10));
         //     simpletext::draw(t)
         // }),
+
+        "M-S-question" => modify_with(|_|
+            Dzen::new(
+                DZEN_CENTER_X - 200,
+                0,
+                15,
+                400
+            ).set_p(0)
+            .set_title_align('c')
+            .set_slave_align('l')
+            .set_lines(48)
+            .add_menu()
+            .set_e_easy()
+            .build()
+            .run("echo 'Bindings
+M-j: focus down
+M-k: focus up
+M-S-j: swap down
+M-S-k: swap up
+M-space: swap focus and head
+M-S-space: rotate focus to head
+M-w: kill focused
+M-Tab: toggle tag
+M-bracketright: next layout
+M-bracketleft: previous layout
+M-u: increase main size
+M-d: decrease main size
+M-l: expand main
+M-h: shrink main
+M-r: launcher
+M-Return: terminal
+M-p: browser
+M-S-Return: new terminal session
+M-S-e: editor
+M-S-l: log
+M-S-z: clients
+M-C-z: procs
+M-Escape: exit
+M-S-question: keybindings
+
+Mouse bindings
+M-S-Left: drag
+M-S-Right: resize
+M-S-Middle: sink'",
+                "zsh"
+            )
+        ),
+
 
         //time
         "M-a" => modify_with(|_|
@@ -195,7 +236,7 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
     };
 
     // more workspace management
-    for tag in &["1", "2"] {
+    for tag in &["1", "2", "3"] {
         raw_bindings.extend([
             (
                 format!("M-{tag}"),
@@ -232,3 +273,19 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
 
     raw_bindings
 }
+
+pub fn mouse_bindings() -> HashMap<MouseState, Box<dyn MouseEventHandler<RustConn>>> {
+    use penrose::core::bindings::{
+        ModifierKey::{Meta, Shift},
+        MouseButton::{Left, Middle, Right},
+    };
+
+    map! {
+        map_keys: |(button, modifiers)| MouseState { button, modifiers };
+
+        (Left, vec![Shift, Meta]) => MouseDragHandler::boxed_default(),
+        (Right, vec![Shift, Meta]) => MouseResizeHandler::boxed_default(),
+        (Middle, vec![Shift, Meta]) => click_handler(sink_focused()),
+    }
+}
+
