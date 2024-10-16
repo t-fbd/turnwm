@@ -109,7 +109,7 @@ pub fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>>
             ).set_p(0)
             .set_title_align('c')
             .set_slave_align('l')
-            .set_lines(48)
+            .set_lines(30)
             .add_menu()
             .set_e_easy()
             .build()
